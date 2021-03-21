@@ -1,15 +1,15 @@
-import React from "react";
-import { Redirect, Route } from "react-router-dom";
-import { UserContext } from "../providers/UserProvider";
+import React from 'react';
+import { Redirect, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const PrivateRoute = ({ component: Component, isPrivate = false, ...rest }) => {
-  const userStore = React.useContext(UserContext);
+  const user = useSelector(state => state.user);
 
-  if (isPrivate && !localStorage.getItem("loged")) {
+  if (isPrivate && !user.isLoged) {
     return <Redirect to="/" />;
   }
 
-  return <Route {...rest} render={(props) => <Component {...props} />} />;
+  return <Route {...rest} render={props => <Component {...props} />} />;
 };
 
 export default PrivateRoute;

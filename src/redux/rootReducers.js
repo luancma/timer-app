@@ -1,8 +1,12 @@
-import { combineReducers } from "redux";
-import userSlice from './slices/user'
+import { combineReducers } from 'redux';
+import breaksSlice from './slices/breaksSlice';
+import normalWorkSlice from './slices/normalWorkSlice';
+import userSlice from './slices/user';
 
 const reducer = combineReducers({
   user: userSlice,
+  workTime: normalWorkSlice,
+  breaksSlice,
 });
 
-export { reducer }
+export { reducer };

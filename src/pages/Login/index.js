@@ -1,48 +1,10 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 import '../../services/mock/fakeDatabase';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserToLogin, increment } from '../../redux/slices/user';
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Input = styled.div`
-  border: 1px solid purple;
-  font-size: 1rem;
-  border-radius: 0.35rem;
-  box-shadow: ${props => props.isFocus && `0px 0px 0px 1px purple`};
-
-  label {
-    margin-left: 0.5rem;
-  }
-
-  input {
-    width: 18.75rem;
-    border: none;
-    margin: 0.5rem;
-
-    &:hover,
-    &:active,
-    &:focus {
-      border: none;
-      outline: none;
-    }
-  }
-
-  & ~ & {
-    margin-top: 0.5rem;
-  }
-
-  &:hover {
-    box-shadow: 0px 0px 0px 1px purple;
-  }
-`;
+import { fetchUserToLogin } from '../../redux/slices/user';
+import { Container, Content, Input } from './styles';
+import { Button } from '../../components/Button/index';
 
 export function Login() {
   const dispatch = useDispatch();
@@ -91,39 +53,43 @@ export function Login() {
     if (user.isLoged) {
       history.push('/logado');
     }
-  }, [user]);
+  }, [user, history]);
 
   return (
     <Container>
-      <h1>Login</h1>
-      <Input isFocus={isFocus.name === 'email'}>
-        <label>Email</label>
-        <input
-          onFocus={handleFocusIn}
-          onBlur={handleFocusOut}
-          type="email"
-          name="email"
-          value={userState.email}
-          onChange={handleInputUser}
-          placeholder="Digite o seu email"
-        />
-      </Input>
-      <Input isFocus={isFocus.name === 'password'}>
-        <label>Senha</label>
-        <input
-          onFocus={handleFocusIn}
-          onBlur={handleFocusOut}
-          placeholder="Digite a sua senha"
-          type="password"
-          name="password"
-          value={userState.password}
-          onChange={handleInputUser}
-        />
-      </Input>
+      <Content>
+        <h1>Job Timer</h1>
+        <Input isFocus={isFocus.name === 'email'}>
+          <label>Email</label>
+          <input
+            onFocus={handleFocusIn}
+            onBlur={handleFocusOut}
+            type="email"
+            name="email"
+            value={userState.email}
+            onChange={handleInputUser}
+            placeholder="Digite o seu email"
+          />
+        </Input>
+        <Input isFocus={isFocus.name === 'password'}>
+          <label>Senha</label>
+          <input
+            onFocus={handleFocusIn}
+            onBlur={handleFocusOut}
+            placeholder="Digite a sua senha"
+            type="password"
+            name="password"
+            value={userState.password}
+            onChange={handleInputUser}
+          />
+        </Input>
 
-      <button onClick={e => handleLogin(e)} type="submit">
-        Enviar
-      </button>
+        <div className="buttonWrapper">
+          <Button onClick={e => handleLogin(e)} type="submit">
+            Entrar
+          </Button>
+        </div>
+      </Content>
     </Container>
   );
 }

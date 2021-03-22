@@ -1,83 +1,48 @@
 import React from 'react';
-import { useLunchReducer, TYPES } from '../../reducers/useLunchTimer';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/slices/user';
+import { DefaultCard } from '../../components/DefaultCard';
+import { Header } from '../../components/Header';
+import { CardsContent } from './styles';
+import { incrementSeconds } from '../../redux/slices/normalWorkSlice';
+import { incrementBreakSeconds } from '../../redux/slices/breaksSlice';
 
 export function Home() {
   const dispatch = useDispatch();
-  const teste = useLunchReducer();
-  const [timer, setTimer] = React.useState({
-    seconds: 0,
-    minuts: 0,
-    hours: 0,
-    miliseconds: 0,
-  });
-  const [lunchTimer, setLunchTimer] = React.useState({
-    seconds: 0,
-    minuts: 0,
-    hours: 0,
-    miliseconds: 0,
-  });
-  const [isCounting, setIsCounting] = React.useState(false);
-  const [breackCounter, setBreackCounter] = React.useState(false);
-  const handleToggleButton = () => setIsCounting(prev => !prev);
-  const handleBreack = () => {
-    handleToggleButton();
-    setBreackCounter(true);
-  };
+  const workTime = useSelector(state => state.workTime);
+  const breaksSlice = useSelector(state => state.breaksSlice);
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
+  const incrementWorkTime = React.useCallback(() => {
+    setTimeout(() => {
+      dispatch(incrementSeconds());
+    }, 1000);
+  }, [dispatch]);
+
+  const incrementBreakTime = React.useCallback(() => {
+    setTimeout(() => {
+      dispatch(incrementBreakSeconds());
+    }, 1000);
+  }, [dispatch]);
 
   React.useEffect(() => {
-    if (teste.state.luncheSeconds === 60) {
-      return teste.dispatch({
-        type: TYPES.INCREMENT_LUNCH_MINUTS,
-      });
+    if (!workTime.isPaused) {
+      incrementWorkTime();
     }
-    if (teste.state.luncheMinuts === 60) {
-      return teste.dispatch({
-        type: TYPES.INCREMENT_LUNCH_HOURS,
-      });
-    }
-    if (teste.state.startLunch) {
-      setTimeout(() => {
-        teste.dispatch({
-          type: TYPES.INCREMENT_LUNCH_SECONDS,
-        });
-      }, 10);
-    }
+  }, [workTime.isPaused, workTime.seconds, incrementWorkTime]);
 
-    return undefined;
-  }, [teste.state.startLunch, teste, lunchTimer]);
+  React.useEffect(() => {
+    if (!breaksSlice.isPaused) {
+      incrementBreakTime();
+    }
+  }, [breaksSlice.isPaused, breaksSlice.seconds, incrementBreakTime]);
 
   return (
-    <div className="App">
-      <button onClick={handleLogout}>Logout</button>
-      <p>
-        Lunch time: {teste.state.luncheHours}:{teste.state.luncheMinuts}:
-        {teste.state.luncheSeconds}
-      </p>
-      <p>
-        Timer counter:{timer.hours}:{timer.minuts}:{timer.seconds}
-      </p>
-      <div>
-        <button onClick={handleToggleButton}>
-          {isCounting ? 'Stop' : 'Start'}
-        </button>
-      </div>
-      <div>
-        <button
-          onClick={
-            teste.state.startLunch
-              ? () => teste.stopLunchAction()
-              : () => teste.startLunchAction()
-          }
-        >
-          Lunch Timer
-        </button>
-      </div>
+    <div>
+      <Header />
+      <CardsContent>
+        <DefaultCard type="work" />
+        <DefaultCard type="break" />
+      </CardsContent>
     </div>
   );
 }

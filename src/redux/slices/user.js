@@ -1,31 +1,31 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getUserByEmail } from "../../services/users";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getUserByEmail } from '../../services/users';
 
 const initialState = {
-  name: "",
-  email: "",
+  name: '',
+  email: '',
   isLoged: false,
 };
 
 export const fetchUserToLogin = createAsyncThunk(
-  "user/fetchUserToLogin",
+  'user/fetchUserToLogin',
   async ({ email, password }, thunkAPI) =>
     await getUserByEmail({ email, password })
-      .then((response) => response)
-      .catch((error) => {
+      .then(response => response)
+      .catch(error => {
         console.error(error.response);
-      })
+      }),
 );
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     increment(state) {
       console.log(state);
     },
     logout(state, action) {
-      (state.name = ""), (state.email = ""), (state.isLoged = false);
+      (state.name = ''), (state.email = ''), (state.isLoged = false);
     },
     decrement(state) {
       console.log(state);
@@ -38,7 +38,7 @@ const userSlice = createSlice({
       state.isLoged = true;
     },
     [fetchUserToLogin.rejected]: (state, action) => {
-      console.log("error");
+      console.log('error');
       //   state.entities.push(action.payload);
     },
   },
